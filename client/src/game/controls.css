@@ -1,0 +1,25 @@
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #344c3c;
+  background: #14251f;
+}
+
+.game-controls button {
+  min-width: 46px;
+  min-height: 42px;
+  border: 1px solid #607f68;
+  border-radius: 8px;
+  background: #20362d;
+  color: #e5eddf;
+  font-size: 18px;
+  font-weight: 800;
+  touch-action: none;
+}
+
+.game-controls button:active {
+  background: #456b49;
+  transform: translateY(1px);
+}

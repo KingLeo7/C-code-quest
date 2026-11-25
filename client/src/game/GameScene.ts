@@ -7,15 +7,15 @@ export class GameScene extends Phaser.Scene {
   private handleKeyDown = (event: KeyboardEvent) => {
     if (this.isUiTarget(event.target)) return
 
-    const key = event.key.toLowerCase()
-    if (!['arrowleft', 'arrowright', 'arrowup', 'arrowdown', 'a', 'd', 'w', 's', 'e', ' '].includes(key)) return
+    const key = event.code
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS', 'KeyE', 'Space'].includes(key)) return
 
     event.preventDefault()
     this.pressedKeys.add(key)
-    if ((key === 'e' || key === ' ') && !event.repeat) this.tryInteract()
+    if ((key === 'KeyE' || key === 'Space') && !event.repeat) this.tryInteract()
   }
   private handleKeyUp = (event: KeyboardEvent) => {
-    this.pressedKeys.delete(event.key.toLowerCase())
+    this.pressedKeys.delete(event.code)
   }
   constructor(onInteract?: () => void) { super('GameScene'); this.onInteract = onInteract }
   create() {
@@ -51,11 +51,11 @@ export class GameScene extends Phaser.Scene {
     }
     this.game.canvas.tabIndex=0
     this.game.canvas.addEventListener('pointerdown',()=>this.game.canvas.focus())
-    window.addEventListener('keydown',this.handleKeyDown)
-    window.addEventListener('keyup',this.handleKeyUp)
+    window.addEventListener('keydown',this.handleKeyDown,true)
+    window.addEventListener('keyup',this.handleKeyUp,true)
     this.events.once(Phaser.Scenes.Events.SHUTDOWN,()=>{
-      window.removeEventListener('keydown',this.handleKeyDown)
-      window.removeEventListener('keyup',this.handleKeyUp)
+      window.removeEventListener('keydown',this.handleKeyDown,true)
+      window.removeEventListener('keyup',this.handleKeyUp,true)
       this.pressedKeys.clear()
     })
     this.tweens.add({targets:this.hero,y:this.hero.y-4,duration:650,yoyo:true,repeat:-1,ease:'Sine.easeInOut'})
@@ -64,10 +64,10 @@ export class GameScene extends Phaser.Scene {
     if(!this.hero) return
     const speed=2.8
     const k=this.pressedKeys
-    if(k.has('arrowleft')||k.has('a')) this.hero.x-=speed
-    if(k.has('arrowright')||k.has('d')) this.hero.x+=speed
-    if(k.has('arrowup')||k.has('w')) this.hero.y-=speed
-    if(k.has('arrowdown')||k.has('s')) this.hero.y+=speed
+    if(k.has('ArrowLeft')||k.has('KeyA')) this.hero.x-=speed
+    if(k.has('ArrowRight')||k.has('KeyD')) this.hero.x+=speed
+    if(k.has('ArrowUp')||k.has('KeyW')) this.hero.y-=speed
+    if(k.has('ArrowDown')||k.has('KeyS')) this.hero.y+=speed
     this.hero.x=Phaser.Math.Clamp(this.hero.x,24,this.scale.width-24)
     this.hero.y=Phaser.Math.Clamp(this.hero.y,45,this.scale.height-24)
   }
@@ -79,5 +79,10 @@ export class GameScene extends Phaser.Scene {
     if (Phaser.Math.Distance.Between(this.hero.x,this.hero.y,this.scale.width/2,this.scale.height/2+45)<150) {
       this.onInteract?.()
     }
+  }
+  setDirection(direction: 'up'|'down'|'left'|'right', pressed: boolean) {
+    const codes = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }
+    if (pressed) this.pressedKeys.add(codes[direction])
+    else this.pressedKeys.delete(codes[direction])
   }
 }
