@@ -1,0 +1,33 @@
+.reset-game {
+  display: block;
+  width: calc(100% - 30px);
+  margin: 14px 15px 4px;
+  padding: 10px 12px;
+  border: 1px solid #86564d;
+  border-radius: 8px;
+  background: #382622;
+  color: #ffd2c5;
+  font-weight: 800;
+}
+
+.reset-game:hover,
+.reset-confirm:hover {
+  background: #693a31;
+}
+
+.reset-modal {
+  max-width: 480px;
+}
+
+.reset-modal .modal-actions {
+  justify-content: flex-end;
+}
+
+.reset-confirm {
+  padding: 11px 16px;
+  border: 1px solid #c47361;
+  border-radius: 8px;
+  background: #8e4438;
+  color: #fff4ed;
+  font-weight: 800;
+}
