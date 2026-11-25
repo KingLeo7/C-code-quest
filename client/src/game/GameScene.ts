@@ -5,10 +5,11 @@ export class GameScene extends Phaser.Scene {
   private quest!: Phaser.GameObjects.Rectangle
   private onInteract?: () => void
   private handleKeyDown = (event: KeyboardEvent) => {
-    if (this.isUiTarget(event.target)) return
+    if (this.isTextInputTarget(event.target)) return
 
     const key = event.code
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'KeyA', 'KeyD', 'KeyW', 'KeyS', 'KeyE', 'Space'].includes(key)) return
+    if (this.isButtonTarget(event.target) && (key === 'KeyE' || key === 'Space')) return
 
     event.preventDefault()
     this.pressedKeys.add(key)
@@ -58,7 +59,6 @@ export class GameScene extends Phaser.Scene {
       window.removeEventListener('keyup',this.handleKeyUp,true)
       this.pressedKeys.clear()
     })
-    this.tweens.add({targets:this.hero,y:this.hero.y-4,duration:650,yoyo:true,repeat:-1,ease:'Sine.easeInOut'})
   }
   update() {
     if(!this.hero) return
@@ -71,9 +71,12 @@ export class GameScene extends Phaser.Scene {
     this.hero.x=Phaser.Math.Clamp(this.hero.x,24,this.scale.width-24)
     this.hero.y=Phaser.Math.Clamp(this.hero.y,45,this.scale.height-24)
   }
-  private isUiTarget(target: EventTarget | null) {
+  private isTextInputTarget(target: EventTarget | null) {
     if (!(target instanceof HTMLElement)) return false
-    return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(target.tagName)
+    return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+  }
+  private isButtonTarget(target: EventTarget | null) {
+    return target instanceof HTMLElement && target.tagName === 'BUTTON'
   }
   private tryInteract() {
     if (Phaser.Math.Distance.Between(this.hero.x,this.hero.y,this.scale.width/2,this.scale.height/2+45)<150) {
